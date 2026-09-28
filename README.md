@@ -10,7 +10,7 @@ Configuration is done with files in `/usr/local/etc/rotate-tlsa`. For each TLSA 
 file in `/usr/local/etc/rotate-tlsa` with a name of the form `domain.port.protocol`. For example, if a `dane-ee` file has an entry:
 
 ```
-1 _25._tcp.example.com`
+1 _25._tcp.example.com
 ```
 the corresponding configuration file should be in `/usr/local/etc/rotate-tlsa/example.com.25.tcp`.
 
