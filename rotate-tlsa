@@ -1,0 +1,82 @@
+#!/bin/bash
+
+vardir=/var/local/rotate-tlsa
+confdir=/usr/local/etc/rotate-tlsa
+ledir=/etc/letsencrypt
+
+[ -d "$vardir" ] || mkdir -p "$vardir"
+[ -d "$confdir" ] || mkdir -p "$confdir"
+
+for i in $(ls "${ledir}/staging")
+do
+	if [ -d "${ledir}/staging/$i" -a -d "${ledir}/live/$i" -a -f "${ledir}/staging/$i/dane-ee" ]
+	then
+		exec < "${ledir}/staging/$i/dane-ee"
+
+		while read selector entry
+		do
+			port="${entry%%.*}"
+			port="${port#_}"
+			entry="${entry#*.}"
+			protocol="${entry%%.*}"
+			protocol="${protocol#_}"
+			domain="${entry#*.}"
+			stub="${domain}.${port}.${protocol}"
+			conffile="${confdir}/${stub}"
+			if [ -f "$conffile" ]
+			then
+				credsfile=
+				ttl=86400
+
+				. "$conffile"
+
+				if [ -f "$credsfile" ]
+				then
+					. "$credsfile"
+
+					basefile="${vardir}/${stub}."
+					recraw=( $(tlsa --quiet --only-rr --create --selector "${selector}" --port "${port}" --protocol "${protocol}"  --certificate "${ledir}/staging/$i/cert.pem" "$domain" | grep TLSA ) )
+					rec=( "${recraw[0]}" "$ttl" "${recraw[1]}" "${recraw[2]}" "${recraw[3]}" "${recraw[4]}" "${recraw[5]}" "${recraw[6]}" )
+					targfile="${basefile}${rec[7]}"
+					removals=()
+					if [ ! -f "${vardir}/${targfile}" ]
+					then
+						commands="update add ${rec[@]}"
+						if [ -h "${basefile}previous" ]
+						then
+							previous="$(readlink "${basefile}previous")"
+							if [[ "x$previous" != */* && -f "${vardir}/${previous}" ]]
+							then
+								commands="$commands
+$(cat "${vardir}/${previous}")"
+								removals+=("${vardir}/${previous}")
+							fi
+							removals+=("${basefile}previous")
+						fi
+
+						if (( ${#commands} > 0 ))
+						then
+							nsupdate <<-EOF
+								server $dns_rfc2136_server $dns_rfc2136_port
+								key $dns_rfc2136_algorithm:$dns_rfc2136_name $dns_rfc2136_secret
+								${commands}
+								send
+							EOF
+							if (( $? == 0 ))
+							then
+								(( "${#removals[@]}" > 0 )) && rm "${removals[@]}"
+								echo "update delete ${rec[*]}" > "${targfile}"
+								[ -h "${basefile}current" ] && mv "${basefile}current" "${basefile}previous"
+								ln -s "${targfile##*/}" "${basefile}current"
+							fi
+						fi
+					else
+						echo "RFC3166 credentials file missing or not set"
+					fi
+				fi
+			else
+				echo "Missing config file: $conffile"
+			fi
+		done
+	fi
+done

@@ -1,0 +1,21 @@
+#
+# Install this file in /lib/systemd/system/rotate-tlsa.service
+# then run:
+#
+# 	systemctl daemon-reload
+# 	systemctl enable rotate-tlsa.service
+#
+# It runs after tlsaware danebot to install/update TLSA records.
+#
+
+[Unit]
+Description=TLSA rotation
+After=danebot.service
+Requires=danebot.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/rotate-tlsa
+
+[Install]
+WantedBy=multi-user.target
