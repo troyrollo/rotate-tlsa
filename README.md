@@ -7,8 +7,12 @@ To install, copy rotate-tlsa into `/usr/local/sbin` and `rotate-tlsa.service` to
 set up to launch via systemd).
 
 Configuration is done with files in `/usr/local/etc/rotate-tlsa`. For each TLSA record watched in `/etc/letsencrypt/staging/*/dane-ee`, there should be a configuration
-file in `/usr/local/etc/rotate-tlsa` with a name of the form `domain.port.protocol`. For example, if a `dane-ee` file has an entry `1 _25._tcp.example.com`, the
-corresponding configuration file should be in `/usr/local/etc/rotate-tlsa/example.com.25.tcp`.
+file in `/usr/local/etc/rotate-tlsa` with a name of the form `domain.port.protocol`. For example, if a `dane-ee` file has an entry:
+
+```
+1 _25._tcp.example.com`
+```
+the corresponding configuration file should be in `/usr/local/etc/rotate-tlsa/example.com.25.tcp`.
 
 The configuration file is a bash script that provides for setting two variables:
 
