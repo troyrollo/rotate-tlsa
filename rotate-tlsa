@@ -27,6 +27,7 @@ do
 			then
 				credsfile=
 				ttl=86400
+				extra_view_keynames=()
 
 				. "$conffile"
 
@@ -56,12 +57,18 @@ $(cat "${vardir}/${previous}")"
 
 						if (( ${#commands} > 0 ))
 						then
-							nsupdate <<-EOF
-								server $dns_rfc2136_server $dns_rfc2136_port
-								key $dns_rfc2136_algorithm:$dns_rfc2136_name $dns_rfc2136_secret
-								${commands}
-								send
-							EOF
+							echo "$commands"
+							(
+								for keyname in "$dns_rfc2136_name" "${extra_view_keynames[@]}"
+								do
+									cat <<-EOF
+										server $dns_rfc2136_server $dns_rfc2136_port
+										key $dns_rfc2136_algorithm:$keyname $dns_rfc2136_secret
+										${commands}
+										send
+									EOF
+								done
+							) | nsupdate
 							if (( $? == 0 ))
 							then
 								(( "${#removals[@]}" > 0 )) && rm "${removals[@]}"
