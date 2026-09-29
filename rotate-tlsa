@@ -81,7 +81,7 @@ $(cat "${vardir}/${previous}")"
 					fi
 				fi
 			else
-				echo "Missing config file: $conffile"a >&2
+				echo "Missing config file: $conffile" >&2
 			fi
 		done
 	fi
