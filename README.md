@@ -16,7 +16,7 @@ the corresponding configuration file should be in `/usr/local/etc/rotate-tlsa/ex
 
 The configuration file is a bash script that provides for setting two variables:
 
-1. `credsfile` (mandatory) - specify the location of an shell script containing RFC2136 credentials. If your credentials file for certbot does not include spaces before or after the equal sign, you can effectively use the same credentials file you use for certbot. It must set all of `dns_rfc2136_server`, `dns_rfc2136_port`, `dns_rfc2136_name`, `dns_rfc2136_secret`, and `dns_rfc2136_algorithm`
+1. `credsfile` (mandatory) - specify the location of a Bash shell script providing RFC2136 credentials. If your credentials file for certbot does not include spaces before or after the equal sign, you can effectively use the same credentials file you use for certbot. It must set all of `dns_rfc2136_server`, `dns_rfc2136_port`, `dns_rfc2136_name`, `dns_rfc2136_secret`, and `dns_rfc2136_algorithm`
 3. `ttl` (optional) - specify the TTL to be used in the TLSA records. Default: 86400.
 
 Example:
