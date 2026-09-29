@@ -77,11 +77,11 @@ $(cat "${vardir}/${previous}")"
 							fi
 						fi
 					else
-						echo "RFC3166 credentials file missing or not set"
+						echo "RFC3166 credentials file missing or not set for $stub" >&2
 					fi
 				fi
 			else
-				echo "Missing config file: $conffile"
+				echo "Missing config file: $conffile"a >&2
 			fi
 		done
 	fi
