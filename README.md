@@ -1,5 +1,5 @@
-# rotate-tlsa
-This tool is a Bash script that installs TLSA keys into a DNS zone using RFC2136 with bind's nsupdate command. It can be run immediately after "danebot renew"
+# rotate-tlsa - install and update TLSA records to support DANE for keys managed tlsaware danebot
+This tool is a Bash script that installs TLSA records into a DNS zone using RFC2136 with bind's nsupdate command. It can be run immediately after "danebot renew"
 (from tlsaware danebot). If the key has changed it will rotate the current key to previous after retiring any previous key's TLSA records, so that there should
 never be more than one TLSA record in the system for any given name.
 
