@@ -41,7 +41,7 @@ do
 					removals=()
 					if [ ! -f "${vardir}/${targfile}" ]
 					then
-						commands="update add ${rec[@]}"
+						commands="update add ${rec[*]}"
 						if [ -h "${basefile}previous" ]
 						then
 							previous="$(readlink "${basefile}previous")"
