@@ -17,11 +17,19 @@ the corresponding configuration file should be in `/usr/local/etc/rotate-tlsa/ex
 The configuration file is a bash script that provides for setting two variables:
 
 1. `credsfile` (mandatory) - specify the location of a Bash shell script providing RFC2136 credentials. If your credentials file for certbot does not include spaces before or after the equal sign, you can effectively use the same credentials file you use for certbot. It must set all of `dns_rfc2136_server`, `dns_rfc2136_port`, `dns_rfc2136_name`, `dns_rfc2136_secret`, and `dns_rfc2136_algorithm`
-3. `ttl` (optional) - specify the TTL to be used in the TLSA records. Default: 86400.
+2. `ttl` (optional) - specify the TTL to be used in the TLSA records. Default: 86400.
+3. `extra_view_keynames` (optional) - specify an array of additional key names for registering updates. This is useful for sites with multiple views in BIND (for an example, and internal view and an external view). By setting up multiple keys in the BIND configuration, each with the same secret, the same TLSA records can be propagate to both the internal and external views by using ACLs conditioned on the key. This will be necessary where the host danebot runs on normally accesses the internal view (so danebot sees the internal view when it checks for the TLSA records being present).
 
-Example:
+Example 1 - configuration limiting the TTL to 1 hour:
 
 ```
 credsfile=/etc/bind/rfc2136-creds.ini
 ttl=3600
+```
+
+Example 2 - configuration that needs to set the TLSA records in an additional view
+
+```
+credsfile=/etc/bind/rfc2136-creds.ini
+extra_view_keynames=( dane-key.internal.example.com )
 ```
