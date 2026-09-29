@@ -4,7 +4,7 @@ This tool is a Bash script that installs TLSA records into a DNS zone using RFC2
 never be more than two TLSA records in the system for any given name.
 
 To install:
-1. copy rotate-tlsa into `/usr/local/sbin` and `rotate-tlsa.service` to `/lib/systemd/system` (this assumes that you are using systemd and have danebot set up to launch via systemd).
+1. copy `rotate-tlsa` into `/usr/local/sbin` and `rotate-tlsa.service` to `/lib/systemd/system` (this assumes that you are using systemd and have danebot set up to launch via systemd).
 2. install `certbot`, `danebot` and the `tlsa` command (in the `hash-slinger` package on Debian) if not already installed.
 
 Configuration is done with files in `/usr/local/etc/rotate-tlsa`. For each TLSA record watched in `/etc/letsencrypt/staging/*/dane-ee`, there should be a configuration
