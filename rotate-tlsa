@@ -40,7 +40,7 @@ do
 					rec=( "${recraw[0]}" "$ttl" "${recraw[1]}" "${recraw[2]}" "${recraw[3]}" "${recraw[4]}" "${recraw[5]}" "${recraw[6]}" )
 					targfile="${basefile}${rec[7]}"
 					removals=()
-					if [ ! -f "${vardir}/${targfile}" ]
+					if [ ! -f "${targfile}" ]
 					then
 						commands="update add ${rec[*]}"
 						if [ -h "${basefile}previous" ]
@@ -76,9 +76,9 @@ $(cat "${vardir}/${previous}")"
 								ln -s "${targfile##*/}" "${basefile}current"
 							fi
 						fi
-					else
-						echo "RFC3166 credentials file missing or not set for $stub" >&2
 					fi
+				else
+					echo "RFC3166 credentials file missing or not set for $stub" >&2
 				fi
 			else
 				echo "Missing config file: $conffile" >&2
